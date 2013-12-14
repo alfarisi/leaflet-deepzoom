@@ -1,4 +1,4 @@
-Leaflet.Deepzoom
+leaflet-deepzoom
 ================
 
-Display Deepzoom tiles with Leaflet
+Display DeepZoom tiles with Leaflet, based on Leaflet.Zoomify

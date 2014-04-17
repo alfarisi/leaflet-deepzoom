@@ -21,11 +21,12 @@
     <script type="text/javascript">
 
         var map = L.map('image2d').setView(new L.LatLng(0,0), 0);
-
+		
         L.tileLayer.deepzoom('DeepZoomImage/hubble_files/', { 
             width: 2400, 
             height: 3000,
-            tolerance: 0.8
+            tolerance: 0.8,
+			imageFormat: 'jpg'
         }).addTo(map);
 		
 		//var southWest = new L.LatLng(map.unproject([0, 3120], map.getMaxZoom())),

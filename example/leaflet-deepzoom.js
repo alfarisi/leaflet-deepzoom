@@ -1,11 +1,15 @@
 /*
- * L.TileLayer.DeepZoom display DeepZoom tiles with Leaflet
+ * Leaflet-DeepZoom 1.0.1
+ * Displaying DeepZoom tiles with Leaflet 0.7.x
+ * by Al Farisi, Indokreatif Teknologi
+ * https://github.com/alfarisi/leaflet-deepzoom
  */
 
 L.TileLayer.DeepZoom = L.TileLayer.extend({
 	options: {
 		continuousWorld: true,
-		tolerance: 0.8
+		tolerance: 0.8,
+		imageFormat: 'jpg'
 	},
 
 	initialize: function (url, options) {
@@ -93,8 +97,8 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		}
 	},
 
-	getTileUrl: function (tilePoint) {
-		return this._url + this._map.getZoom() + '/' + tilePoint.x + '_' + tilePoint.y + '.jpg';
+	getTileUrl: function(tilePoint) {
+		return this._url + this._map.getZoom() + '/' + tilePoint.x + '_' + tilePoint.y + '.' + this.options.imageFormat;
 	}
 
 });

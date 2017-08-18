@@ -7,13 +7,12 @@
 
 L.TileLayer.DeepZoom = L.TileLayer.extend({
 	options: {
-		continuousWorld: true,
 		tolerance: 0.8,
 		imageFormat: 'jpg'
 	},
 
 	initialize: function (url, options) {
-		options = L.setOptions(this, options);
+		var options = L.setOptions(this, options);
 		this._url = url;
 
     	var imageSize = L.point(options.width, options.height),
@@ -34,7 +33,7 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
         this.options.maxZoom = this._gridSize.length - 1;
 	},
 
-	onAdd: function (map) {
+	/*onAdd: function (map) {
 		L.TileLayer.prototype.onAdd.call(this, map);
 
 		var mapSize = map.getSize(),
@@ -43,14 +42,14 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 			center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
 
 		map.setView(center, zoom, true);
-	},
+	},*/
 
 	_getGridSize: function (imageSize) {
 		var tileSize = this.options.tileSize;
 		return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
 	},
 
-	_getBestFitZoom: function (mapSize) {
+	/*_getBestFitZoom: function (mapSize) {
 		var tolerance = this.options.tolerance,
 			zoom = this._imageSize.length - 1,
 			imageSize, zoom;
@@ -64,14 +63,9 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		}
 
 		return zoom;
-	},
+	},*/
 
-	_tileShouldBeLoaded: function (tilePoint) {
-		var gridSize = this._gridSize[this._map.getZoom()];
-		return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
-	},
-
-	_addTile: function (tilePoint, container) {
+	/*_addTile: function (tilePoint, container) {
 		var tilePos = this._getTilePos(tilePoint),
 			tile = this._getTile(),
 			zoom = this._map.getZoom(),
@@ -95,10 +89,39 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		if (tile.parentNode !== this._tileContainer) {
 			container.appendChild(tile);
 		}
+	},*/
+	_addTile: function (coords, container) {
+		//Load the tile via the original leaflet code
+		L.TileLayer.prototype._addTile.call(this, coords, container);
+		//Get out imagesize in pixels for this zoom level and our grid size
+		var imageSize = this._imageSize[this._getZoomForUrl()],
+			gridSize = this._gridSize[this._getZoomForUrl()];
+
+		//The real tile size (default:256) and the display tile size (if zoom > maxNativeZoom)
+		var	realTileSize = L.GridLayer.prototype.getTileSize.call(this),
+			displayTileSize = L.TileLayer.prototype.getTileSize.call(this);
+
+		//Get the current tile to adjust
+		var key = this._tileCoordsToKey(coords),
+			tile = this._tiles[key].el;
+
+		//Calculate the required size of the border tiles
+		var scaleFactor = L.point(	(imageSize.x % realTileSize.x),
+									(imageSize.y % realTileSize.y)).unscaleBy(realTileSize);
+
+		//Update tile dimensions if we are on a border
+		if ((imageSize.x % realTileSize.x) > 0 && coords.x === gridSize.x - 1) {
+			tile.style.width = displayTileSize.scaleBy(scaleFactor).x + 'px';
+		}
+
+		if ((imageSize.y % realTileSize.y) > 0 && coords.y === gridSize.y - 1) {
+			tile.style.height = displayTileSize.scaleBy(scaleFactor).y + 'px';
+		}
 	},
 
 	getTileUrl: function(tilePoint) {
-		return this._url + this._map.getZoom() + '/' + tilePoint.x + '_' + tilePoint.y + '.' + this.options.imageFormat;
+		//return this._url + this._map.getZoom() + '/' + tilePoint.x + '_' + tilePoint.y + '.' + this.options.imageFormat;
+		return this._url + this._getZoomForUrl() + '/' + tilePoint.x + '_' + tilePoint.y + '.' + this.options.imageFormat;
 	}
 
 });

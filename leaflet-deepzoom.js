@@ -21,23 +21,23 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		if (options.width < 0 || options.height < 0) {
 			throw new Error("The user must set the Width and Height of the image");
 		}
+		
+		var imageSize = L.point(options.width, options.height),
+			tileSize = options.tileSize;
 
-    	var imageSize = L.point(options.width, options.height),
-	    	tileSize = options.tileSize;
-
-    	this._imageSize = [imageSize];
-    	this._gridSize = [this._getGridSize(imageSize)];
+		this._imageSize = [imageSize];
+		this._gridSize = [this._getGridSize(imageSize)];
 		
 		while (imageSize.x > 0 || imageSize.y > 0) {
 			imageSize = imageSize.divideBy(2).floor();
-        	this._imageSize.push(imageSize);
-        	this._gridSize.push(this._getGridSize(imageSize));
-        }
+			this._imageSize.push(imageSize);
+			this._gridSize.push(this._getGridSize(imageSize));
+		}
 
 		this._imageSize.reverse();
 		this._gridSize.reverse();
 
-        options.maxNativeZoom = this._gridSize.length - 1;
+		options.maxNativeZoom = this._gridSize.length - 1;
 		
 		if (typeof options.maxZoom == 'undefined') {
 			options.maxZoom = options.maxNativeZoom;
@@ -56,7 +56,7 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 	
 	_addTile: function (coords, container) {
 		var tilePos = this._getTilePos(coords),
-		    key = this._tileCoordsToKey(coords);
+			key = this._tileCoordsToKey(coords);
 
 		var tile = this.createTile(this._wrapCoords(coords), L.bind(this._tileReady, this, coords));
 		

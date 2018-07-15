@@ -1,0 +1,27 @@
+{
+  "name": "leaflet-deepzoom",
+  "version": "2.0.0",
+  "description": "Displaying DeepZoom tiles with Leaflet",
+  "main": "leaflet-deepzoom.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfarisi/leaflet-deepzoom.git"
+  },
+  "keywords": [
+    "Leaflet",
+    "DeepZoom",
+    "tiles"
+  ],
+  "author": "Al Farisi, Indokreatif Teknologi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alfarisi/leaflet-deepzoom/issues"
+  },
+  "homepage": "https://github.com/alfarisi/leaflet-deepzoom#readme"
+}

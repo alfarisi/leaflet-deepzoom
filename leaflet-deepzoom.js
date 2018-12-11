@@ -11,10 +11,11 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		height: -1,
 		imageFormat: 'jpg',
 		tileSize: 256,
-		maxZoom: undefined
+		maxZoom: undefined,
+		overlap: 1
 	},
 
-	initialize: function (url, options) {
+	initialize: function (map, url, options) {
 		var options = L.setOptions(this, options);
 		this._url = url;
 		
@@ -64,14 +65,29 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		
 		var imageSize = this._imageSize[this._getZoomForUrl()],
 			gridSize = this._gridSize[this._getZoomForUrl()],
-			tileSize = this.options.tileSize;
+			tileSize = this.options.tileSize,
+		    	overlap = this.options.overlap;
 		
-		if (coords.x === gridSize.x - 1) {
-			tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
-		} 
-
-		if (coords.y === gridSize.y - 1) {
-			tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';
+		if (coords.x === 0) {
+			tile.style.width = tileSize + overlap + 'px';
+		} else {
+			tilePos.x -= overlap;
+			if (coords.x === gridSize.x - 1) {
+				tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + overlap + 'px';
+			} else {
+				tile.style.width = tileSize + 2*overlap + 'px';
+			}
+		}
+		
+		if (coords.y === 0) {
+			tile.style.height = tileSize + overlap + 'px';
+		} else {
+			tilePos.y -= overlap;
+			if (coords.y === gridSize.y - 1) {
+				tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + overlap + 'px';
+			} else {
+				tile.style.height = tileSize + 2*overlap + 'px';
+			}
 		}
 		
 		if (this.createTile.length < 2) {
@@ -99,6 +115,6 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 
 });
 
-L.tileLayer.deepzoom = function (url, options) {
-	return new L.TileLayer.DeepZoom(url, options);
+L.tileLayer.deepzoom = function (map, url, options) {
+	return new L.TileLayer.DeepZoom(map, url, options);
 };

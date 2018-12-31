@@ -66,28 +66,22 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		var imageSize = this._imageSize[this._getZoomForUrl()],
 			gridSize = this._gridSize[this._getZoomForUrl()],
 			tileSize = this.options.tileSize,
-		    	overlap = this.options.overlap;
+			overlap = this.options.overlap,
+			tileWidth = (coords.x === gridSize.x - 1) ? imageSize.x - (tileSize * (gridSize.x - 1)) - overlap : tileSize,
+			tileHeight = (coords.y === gridSize.y - 1) ? imageSize.y - (tileSize * (gridSize.y - 1)) - overlap : tileSize;
 		
 		if (coords.x === 0) {
-			tile.style.width = tileSize + overlap + 'px';
+			tile.style.width = tileWidth + overlap + 'px';
 		} else {
-			tilePos.x -= overlap;
-			if (coords.x === gridSize.x - 1) {
-				tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + overlap + 'px';
-			} else {
-				tile.style.width = tileSize + 2*overlap + 'px';
-			}
+			tile.style.width = tileWidth + 2 * overlap + 'px';
+			tilePos.x -= overlap; //shift position of all other tiles
 		}
-		
+
 		if (coords.y === 0) {
-			tile.style.height = tileSize + overlap + 'px';
+			tile.style.height = tileHeight + overlap + 'px';
 		} else {
+			tile.style.height = tileHeight + 2 * overlap + 'px';
 			tilePos.y -= overlap;
-			if (coords.y === gridSize.y - 1) {
-				tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + overlap + 'px';
-			} else {
-				tile.style.height = tileSize + 2*overlap + 'px';
-			}
 		}
 		
 		if (this.createTile.length < 2) {

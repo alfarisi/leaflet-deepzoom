@@ -10,8 +10,7 @@
     "README.md"
   ],
   "scripts": {
-    "test": "echo \"No tests defined\"",
-    "prepublishOnly": "npm run build || echo 'No build step required'"
+    "test": "echo \"No tests defined\""
   },
   "repository": {
     "type": "git",
@@ -27,7 +26,7 @@
     "plugin"
   ],
   "author": "Al Farisi, Indokreatif Teknologi",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "leaflet": ">=1.2.0"
   },

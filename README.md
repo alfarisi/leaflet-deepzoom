@@ -1,15 +1,9 @@
-Leaflet-DeepZoom
-================
-Display DeepZoom tiles with Leaflet, based on Leaflet.Zoomify
-
-Leaflet-DeepZoom 2.0 for Leaflet 1.2 -and- 
-Leaflet-DeepZoom 1.0 for Leaflet 0.7
-# Leaflet DeepZoom
+# Leaflet-DeepZoom
 
 [![npm version](https://img.shields.io/npm/v/leaflet-deepzoom.svg)](https://www.npmjs.com/package/leaflet-deepzoom)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Display [DeepZoom (DZI)](https://learn.microsoft.com/en-us/previous-versions/deep-zoom/cc645077(v=msdn.10)) image tiles with [Leaflet](https://leafletjs.com/).  
+Display DeepZoom (DZI) image tiles with [Leaflet](https://leafletjs.com/).  
 Originally based on **Leaflet.Zoomify**.
 
 ---

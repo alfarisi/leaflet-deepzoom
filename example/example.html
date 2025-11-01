@@ -24,7 +24,8 @@
 
         var dzLayer = L.tileLayer.deepzoom('DeepZoomImage/hubble_files/', { 
             width: 2400, 
-            height: 3000
+            height: 3000,
+            overlap: 1
         }).addTo(map);
 
 		// Restrict to bounds

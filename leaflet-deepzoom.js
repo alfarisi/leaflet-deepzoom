@@ -11,11 +11,13 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		height: -1,
 		imageFormat: 'jpg',
 		tileSize: 256,
+		overlap: 0,
+		minZoom: 0,
 		maxZoom: undefined
 	},
 
 	initialize: function (url, options) {
-		var options = L.setOptions(this, options);
+		options = L.setOptions(this, options);
 		this._url = url;
 		
 		if (options.width < 0 || options.height < 0) {
@@ -25,6 +27,7 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		var imageSize = L.point(options.width, options.height),
 			tileSize = options.tileSize;
 
+		//this._overlap = options.overlap || 0;
 		this._imageSize = [imageSize];
 		this._gridSize = [this._getGridSize(imageSize)];
 		
@@ -37,23 +40,34 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		this._imageSize.reverse();
 		this._gridSize.reverse();
 
+		options.minNativeZoom = 1;
 		options.maxNativeZoom = this._gridSize.length - 1;
+		
+		if (typeof options.minZoom == 'undefined') {
+			options.minZoom = 0;
+		}
 		
 		if (typeof options.maxZoom == 'undefined') {
 			options.maxZoom = options.maxNativeZoom;
 		}
-		
-		var maxZoomGrid = this._gridSize[options.maxNativeZoom];
+	},
+
+	onAdd: function (map) {
+		// Calculate bounds using the actual map instance
+		var options = this.options;
 		var southWest = map.unproject([0, options.height], options.maxNativeZoom);
 		var northEast = map.unproject([options.width, 0], options.maxNativeZoom);
-		options.bounds = new L.LatLngBounds(southWest, northEast);	
+		this.options.bounds = new L.LatLngBounds(southWest, northEast);
+		
+		// Call parent onAdd
+		L.TileLayer.prototype.onAdd.call(this, map);
 	},
 
 	_getGridSize: function (imageSize) {
 		var tileSize = this.options.tileSize;
 		return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
 	},
-	
+
 	_addTile: function (coords, container) {
 		var tilePos = this._getTilePos(coords),
 			key = this._tileCoordsToKey(coords);
@@ -62,23 +76,66 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 		
 		this._initTile(tile);
 		
-		var imageSize = this._imageSize[this._getZoomForUrl()],
-			gridSize = this._gridSize[this._getZoomForUrl()],
-			tileSize = this.options.tileSize;
-		
+		var zoomForUrl = this._getZoomForUrl(),
+			imageSize = this._imageSize[zoomForUrl],
+			gridSize = this._gridSize[zoomForUrl],
+			tileSize = this.options.tileSize
+			overlap = this.options.overlap;
+
+		// Calculate actual tile dimensions (without overlap first)
+		var actualTileWidth = tileSize;
+		var actualTileHeight = tileSize;
+
 		if (coords.x === gridSize.x - 1) {
-			tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
+			actualTileWidth = imageSize.x - (tileSize * (gridSize.x - 1));
 		} 
 
 		if (coords.y === gridSize.y - 1) {
-			tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';
+			actualTileHeight = imageSize.y - (tileSize * (gridSize.y - 1));
+		}
+
+		// Add overlap to display dimensions
+		var displayWidth = actualTileWidth;
+		var displayHeight = actualTileHeight;
+
+		if (overlap > 0) {
+			// Add overlap on right if not the last column
+			if (coords.x < gridSize.x - 1) {
+				displayWidth += overlap;
+			}
+			// Add overlap on left if not the first column
+			if (coords.x > 0) {
+				displayWidth += overlap;
+			}
+			
+			// Add overlap on bottom if not the last row
+			if (coords.y < gridSize.y - 1) {
+				displayHeight += overlap;
+			}
+			// Add overlap on top if not the first row
+			if (coords.y > 0) {
+				displayHeight += overlap;
+			}
+		}
+
+		// Set tile display size
+		tile.style.width = displayWidth + 'px';
+		tile.style.height = displayHeight + 'px';
+
+		// Adjust position to account for overlap
+		if (overlap > 0 && (coords.x > 0 || coords.y > 0)) {
+			var adjustedPos = L.point(
+				tilePos.x - (coords.x > 0 ? overlap : 0),
+				tilePos.y - (coords.y > 0 ? overlap : 0)
+			);
+			L.DomUtil.setPosition(tile, adjustedPos);
+		} else {
+			L.DomUtil.setPosition(tile, tilePos);
 		}
 		
 		if (this.createTile.length < 2) {
 			L.Util.requestAnimFrame(L.bind(this._tileReady, this, coords, null, tile));
 		}
-
-		L.DomUtil.setPosition(tile, tilePos);
 
 		this._tiles[key] = {
 			el: tile,
@@ -94,7 +151,9 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 	},
 
 	getTileUrl: function(tilePoint) {
-		return this._url + this._getZoomForUrl() + '/' + tilePoint.x + '_' + tilePoint.y + '.' + this.options.imageFormat;
+		var zoom = this._getZoomForUrl();
+		zoom = Math.max(0, Math.min(zoom, this._gridSize.length - 1));
+		return this._url + zoom + '/' + tilePoint.x + '_' + tilePoint.y + '.' + this.options.imageFormat;
 	}
 
 });

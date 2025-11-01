@@ -1,5 +1,5 @@
 /*
- * Leaflet-DeepZoom 2.0.0
+ * Leaflet-DeepZoom 2.0.1
  * Displaying DeepZoom tiles with Leaflet 1.x
  * by Al Farisi, Indokreatif Teknologi
  * https://github.com/alfarisi/leaflet-deepzoom

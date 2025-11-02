@@ -32,6 +32,9 @@ Using CDN (for quick demo or CodePen):
 
 ## 🗺️ Example
 
+Live demo:
+👉 [https://alfarisi.github.io/leaflet-deepzoom/example/](https://alfarisi.github.io/leaflet-deepzoom/example/)
+
 Basic example:
 ```html
 <!DOCTYPE html>
@@ -79,7 +82,7 @@ Basic example:
 ---
 
 ## 📄 License
-Released under the [MIT License](LICENSE).
+Released under the [MIT License](LICENSE.txt).
 
 ---
 

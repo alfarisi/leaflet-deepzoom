@@ -1,5 +1,5 @@
 /*
- * Leaflet-DeepZoom 2.0.1
+ * Leaflet-DeepZoom 2.0.2
  * Displaying DeepZoom tiles with Leaflet 1.x
  * by Al Farisi, Indokreatif Teknologi
  * https://github.com/alfarisi/leaflet-deepzoom
@@ -82,60 +82,30 @@ L.TileLayer.DeepZoom = L.TileLayer.extend({
 			tileSize = this.options.tileSize
 			overlap = this.options.overlap;
 
-		// Calculate actual tile dimensions (without overlap first)
-		var actualTileWidth = tileSize;
-		var actualTileHeight = tileSize;
+		// Calculate base tile dimensions (accounting for last tile edge case)
+		var tileWidth = (coords.x === gridSize.x - 1) ? imageSize.x - (tileSize * (gridSize.x - 1)) : tileSize;
+		var tileHeight = (coords.y === gridSize.y - 1) ? imageSize.y - (tileSize * (gridSize.y - 1)) : tileSize;
 
-		if (coords.x === gridSize.x - 1) {
-			actualTileWidth = imageSize.x - (tileSize * (gridSize.x - 1));
-		} 
-
-		if (coords.y === gridSize.y - 1) {
-			actualTileHeight = imageSize.y - (tileSize * (gridSize.y - 1));
-		}
-
-		// Add overlap to display dimensions
-		var displayWidth = actualTileWidth;
-		var displayHeight = actualTileHeight;
-
-		if (overlap > 0) {
-			// Add overlap on right if not the last column
-			if (coords.x < gridSize.x - 1) {
-				displayWidth += overlap;
-			}
-			// Add overlap on left if not the first column
-			if (coords.x > 0) {
-				displayWidth += overlap;
-			}
-			
-			// Add overlap on bottom if not the last row
-			if (coords.y < gridSize.y - 1) {
-				displayHeight += overlap;
-			}
-			// Add overlap on top if not the first row
-			if (coords.y > 0) {
-				displayHeight += overlap;
-			}
-		}
-
-		// Set tile display size
-		tile.style.width = displayWidth + 'px';
-		tile.style.height = displayHeight + 'px';
-
-		// Adjust position to account for overlap
-		if (overlap > 0 && (coords.x > 0 || coords.y > 0)) {
-			var adjustedPos = L.point(
-				tilePos.x - (coords.x > 0 ? overlap : 0),
-				tilePos.y - (coords.y > 0 ? overlap : 0)
-			);
-			L.DomUtil.setPosition(tile, adjustedPos);
+		// Add overlap for display (first tile: +1 side, middle tiles: +2 sides)
+		if (coords.x === 0) {
+			tile.style.width = tileWidth + overlap + 'px';
 		} else {
-			L.DomUtil.setPosition(tile, tilePos);
+			tile.style.width = tileWidth + 2 * overlap + 'px';
+			tilePos.x -= overlap;
+		}
+
+		if (coords.y === 0) {
+			tile.style.height = tileHeight + overlap + 'px';
+		} else {
+			tile.style.height = tileHeight + 2 * overlap + 'px';
+			tilePos.y -= overlap;
 		}
 		
 		if (this.createTile.length < 2) {
 			L.Util.requestAnimFrame(L.bind(this._tileReady, this, coords, null, tile));
 		}
+
+		L.DomUtil.setPosition(tile, tilePos);
 
 		this._tiles[key] = {
 			el: tile,

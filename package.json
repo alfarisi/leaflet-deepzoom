@@ -1,13 +1,16 @@
 {
   "name": "leaflet-deepzoom",
-  "version": "2.0.0",
-  "description": "Displaying DeepZoom tiles with Leaflet",
+  "version": "2.0.1",
+  "description": "Display DeepZoom (DZI) image tiles using Leaflet",
   "main": "leaflet-deepzoom.js",
-  "directories": {
-    "example": "example"
-  },
+  "type": "module",
+  "files": [
+    "leaflet-deepzoom.js",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests defined\""
   },
   "repository": {
     "type": "git",
@@ -16,12 +19,19 @@
   "keywords": [
     "Leaflet",
     "DeepZoom",
-    "tiles"
+    "DZI",
+    "tiles",
+    "map",
+    "zoom",
+    "plugin"
   ],
   "author": "Al Farisi, Indokreatif Teknologi",
-  "license": "ISC",
+  "license": "MIT",
+  "peerDependencies": {
+    "leaflet": ">=1.2.0"
+  },
   "bugs": {
     "url": "https://github.com/alfarisi/leaflet-deepzoom/issues"
   },
-  "homepage": "https://github.com/alfarisi/leaflet-deepzoom#readme"
+  "homepage": "https://alfarisi.github.io/leaflet-deepzoom/"
 }

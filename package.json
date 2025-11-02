@@ -1,6 +1,6 @@
 {
   "name": "leaflet-deepzoom",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Display DeepZoom (DZI) image tiles using Leaflet",
   "main": "leaflet-deepzoom.js",
   "type": "module",

@@ -4,7 +4,7 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Display DeepZoom (DZI) image tiles with [Leaflet](https://leafletjs.com/).  
-Originally based on **Leaflet.Zoomify**.
+Originally based on Leaflet.Zoomify.
 
 ---
 
@@ -82,7 +82,7 @@ Basic example:
 ---
 
 ## 📄 License
-Released under the [MIT License](LICENSE.txt).
+Released under the [MIT License](LICENSE).
 
 ---
 
